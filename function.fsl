@@ -1,0 +1,8 @@
+function TypeTest(x, y) {
+  x + y
+}
+
+// @role(AmalgamatedWidgetAdmin)
+function getOrdersByCustomer(name) {
+  Order.all().where(.customer.name == name)
+}

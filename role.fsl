@@ -17,3 +17,13 @@ role AmalgamatedWidgetAdmin {
     }
   }
 }
+
+role CustomerRole {
+  privileges Customer {
+    read
+  }
+  privileges Order {
+    create
+  }
+  membership Customer
+}
