@@ -1,0 +1,13 @@
+default=dev
+
+[stack.dev]
+endpoint=FQLX/demo
+database=dev
+
+[stack.test]
+endpoint=FQLX/demo
+database=test
+
+[stack.prod]
+endpoint=FQLX/demo
+database=prod

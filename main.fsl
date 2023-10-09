@@ -1,0 +1,119 @@
+// The following schema is auto-generated.
+// This file contains FSL for FQL10-compatible schema items.
+
+collection Order {
+  history_days 0
+  index byCustomer {
+    terms [.customer]
+    values [asc(.product)]
+  }
+  index byProduct {
+    terms [.product]
+  }
+  index orderedByCreated {
+    values [ .created ]
+  }
+}
+
+collection Customer {
+  history_days 0
+  index byState {
+    terms [.address.state]
+  }
+  index byUsername {
+    terms [.username]
+  }
+  index byName {
+    terms [.name]
+  }
+  index orderedByName {
+    values [asc(.name)]
+  }
+  unique [.username]
+  unique [.name.first, .name.last]
+}
+
+collection Pending {
+  history_days 0
+}
+
+collection Errored {
+  history_days 0
+}
+
+collection Completed {
+  history_days 0
+}
+
+collection Constrained {
+  history_days 0
+  unique [.foo, .bar]
+}
+
+collection Review {
+  history_days 0
+  index byProduct {
+    terms [.product]
+  }
+}
+
+collection Product {
+  history_days 0
+  index orderedByPrice {
+    values [asc(.price)]
+  }
+  index byStatus {
+    values [asc(.instock)]
+  }
+  index byFoo {
+    values [asc(.foo)]
+  }
+  index byName {
+    terms [.name]
+  }
+  index orderedByNamePrice {
+    values [asc(.name), asc(.price)]
+  }
+  index byType {
+    terms [.type]
+    values [asc(.price)]
+  }
+}
+
+role CustomerRole {
+  privileges Customer {
+    read
+  }
+  privileges Order {
+    create
+  }
+  membership Customer}
+
+function TypeTest(x, y) {
+  x + y
+}
+
+role AmalgamatedWidgetAdmin {
+
+  membership Customer {
+    predicate ( c => { c.shopAdmin == true } ) 
+  }
+
+  privileges Product {
+    read
+    create {
+      predicate (product => product.shopId == Query.identity()!.shopId)
+    }
+
+    write {
+      predicate ((old, new) => {
+        old.shopId == Query.identity()!.shopId && old.shopId == new.shopId
+      })
+    }
+  }
+}
+
+// @role(AmalgamatedWidgetAdmin)
+function getOrdersByCustomer(name) {
+  Order.all().where(.customer.name == name)
+}
