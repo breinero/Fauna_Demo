@@ -1,0 +1,19 @@
+role AmalgamatedWidgetAdmin {
+
+  membership Customer {
+    predicate ( c => { c.shopAdmin == true } ) 
+  }
+
+  privileges Product {
+    read
+    create {
+      predicate (product => product.shopId == Query.identity()!.shopId)
+    }
+
+    write {
+      predicate ((old, new) => {
+        old.shopId == Query.identity()!.shopId && old.shopId == new.shopId
+      })
+    }
+  }
+}
